@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+import 'package:trab2/screen/database_helper.dart';
+
+/// Tela para criar uma nova conta de utilizador.
+/// Esta tela permite ao utilizador inserir um username e password,
+/// e ao clicar no botão "Create Account", os dados são armazenados no banco de dados.
+class CreateAccountScreen extends StatelessWidget {
+  /// Construtor padrão para a tela de criação de conta.
+  const CreateAccountScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Controladores para os campos de texto de nome do utilizador e passe.
+    final TextEditingController usernameController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+
+    return Scaffold(
+      appBar: AppBar(
+        // Título da AppBar.
+        title: const Text("Create New Account"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        // Coluna para dispor os elementos verticalmente.
+        child: Column(
+          children: [
+            // Campo de texto para o nome do utilizador.
+            TextField(
+              controller: usernameController,
+              decoration: const InputDecoration(labelText: "Username"),
+            ),
+            // Campo de texto para a senha, com obscurecimento do texto.
+            TextField(
+              controller: passwordController,
+              decoration: const InputDecoration(labelText: "Password"),
+              obscureText: true,
+            ),
+            const SizedBox(height: 20),
+            // Botão para criar a conta.
+            ElevatedButton(
+              onPressed: () async {
+                // Obtém os valores dos campos de texto.
+                final String username = usernameController.text;
+                final String password = passwordController.text;
+
+                // Verifica se os campos não estão vazios.
+                if (username.isNotEmpty && password.isNotEmpty) {
+                  // Cria um mapa com os dados do utilizador.
+                  final user = {
+                    'username': username,
+                    'password': password,
+                  };
+
+                  // Insere o utilizador no banco de dados.
+                  await DatabaseHelper().insertUser(user);
+                  // Retorna para a tela anterior.
+                  Navigator.pop(context);
+                }
+              },
+              // Texto do botão.
+              child: const Text("Create Account"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
